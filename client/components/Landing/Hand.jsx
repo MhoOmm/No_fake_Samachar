@@ -45,7 +45,7 @@ const Hand = () => {
       <img
         src={hands}
         alt="Human and AI"
-        className="absolute inset-0 w-full h-full object-contain -translate-y-18 pointer-events-none"
+        className="absolute inset-0 w-full h-full object-contain -translate-y-5 pointer-events-none"
       />
 
       {/* ================= LEFT ================= */}
@@ -84,7 +84,7 @@ const Hand = () => {
 
       {/* ================= RIGHT ================= */}
       <NavLink
-        to="/news"
+        to="/pramaanchatbot"
         className="absolute right-6 md:right-16 top-1/2 -translate-y-76 group z-10"
       >
         <motion.div
