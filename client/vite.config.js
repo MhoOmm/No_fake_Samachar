@@ -4,6 +4,19 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  theme: {
+    extend: {
+      colors: {
+        offwhite: "#F0F0F0",
+        charcoal: "#2B2B2B",
+        newsred: "#ED2939",
+      },
+      fontFamily: {
+        heading: ["Newsreader", "serif"],
+        body: ["Comfortaa", "sans-serif"],
+      },
+    },
+  },
   plugins: [react(),
     tailwindcss(),
   ],
