@@ -9,7 +9,7 @@ export default defineConfig({
       colors: {
         offwhite: "#F0F0F0",
         charcoal: "#2B2B2B",
-        newsred: "#ED2939",
+        newsred: "#b30000",
       },
       fontFamily: {
         heading: ["Playfair Display", "serif"],

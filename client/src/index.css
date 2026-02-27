@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 body {
   font-family: "Newsreader", serif;
@@ -6,10 +7,10 @@ body {
 /* RIGHT → LEFT (Top Thin System Ticker) */
 @keyframes tickerRTL {
   0% {
-    transform: translateX(0%);
+    transform: translateX(-50%);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(0%);
   }
 }
 
@@ -17,19 +18,27 @@ body {
   width: max-content;
   animation: tickerRTL 30s linear infinite;
 }
+.ticker-rtl:hover {
+  animation-play-state: paused;
+}
 
 
 /* LEFT → RIGHT (Big Live News Section) */
 @keyframes tickerLTR {
+
   0% {
-    transform: translateX(-50%);
+    transform: translateX(0%);
   }
   100% {
-    transform: translateX(0%);
+    transform: translateX(-50%);
   }
 }
 
 .ticker-ltr {
   width: max-content;
-  animation: tickerLTR 45s linear infinite;
+
+  animation: tickerLTR 105s linear infinite;
+}
+.ticker-ltr:hover {
+  animation-play-state: paused;
 }
