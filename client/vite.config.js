@@ -12,7 +12,7 @@ export default defineConfig({
         newsred: "#ED2939",
       },
       fontFamily: {
-        heading: ["Newsreader", "serif"],
+        heading: ["Playfair Display", "serif"],
         body: ["Comfortaa", "sans-serif"],
       },
     },
