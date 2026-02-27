@@ -1,24 +1,22 @@
-const cookieParser = require("cookie-parser");
 const express = require("express");
-
-const app = express();
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
-const initCon = async ()=>{
-    try{
-        console.log("Mongo URI:", process.env.MONGO_CONNECT);
-        await main();
+const { connect } = require("./config/db");
 
-        console.log("MongoDB Connected");
+const app = express();
 
-        const PORT = process.env.PORT || 4000;
-        app.listen(PORT,()=>{
-            console.log(`Server Running At Port : ${PORT} `)
-        })
+connect();
 
-    }catch(error){
-        console.log("Error in Server Connection"+error);
-    }
-}
+app.use(cookieParser());
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 
-initCon()
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+    console.log(`Server running at port ${PORT}`);
+});
