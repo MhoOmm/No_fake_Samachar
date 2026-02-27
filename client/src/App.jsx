@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import './App.css'
+import Heading from "../components/Landing/Heading"
+
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <p className="text-3xl font-bold underline text-center">
-        HAMZA PATEL
-      </p>
-    </>
+    <div>
+      <Heading></Heading>
+    </div>
   )
 }
 
