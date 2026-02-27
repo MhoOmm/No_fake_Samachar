@@ -45,7 +45,7 @@ const Hand = () => {
       <img
         src={hands}
         alt="Human and AI"
-        className="absolute inset-0 w-full h-full object-contain -translate-y-5 pointer-events-none"
+        className="absolute inset-0 w-full h-full object-contain -translate-y-5 lg:-translate-y-18 pointer-events-none"
       />
 
       {/* ================= LEFT ================= */}
