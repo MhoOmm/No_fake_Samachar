@@ -32,7 +32,7 @@ function App() {
     <Router>
       <Heading />
       <Routes>
-        <Route path="/" element={<Hand />} />
+        <Route path="/" element={<><Hand /></>} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/pramaanchatbot" element={<Pramaan />} />
         <Route path="/headlines" element={<Headlines />} />
