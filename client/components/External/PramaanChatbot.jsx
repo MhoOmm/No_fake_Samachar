@@ -80,7 +80,7 @@ const Pramaan = () => {
 
     try {
       const response = await axios.post(
-        "http://no-fake-samacharbackend.onrender.com/api/chatbot/pramaan",
+        "https://no-fake-samacharbackend.onrender.com/api/chatbot/pramaan",
         { text: data.message }
       );
 
