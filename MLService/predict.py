@@ -4,8 +4,8 @@ import os
 
 # Hugging Face Model 1
 HF_API_URL_1 = "https://api-inference.huggingface.co/models/your-username/roberta-fake-news"
-HF_API_TOKEN = os.getenv("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") 
-HEADERS = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+# HF_API_TOKEN = os.getenv("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") 
+# HEADERS = {"Authorization": f"Bearer {HF_API_TOKEN}"}
 
 def hf_model_predict(text: str):
     """
