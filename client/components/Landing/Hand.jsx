@@ -51,7 +51,7 @@ const Hand = () => {
 
         {/* ================= LEFT ================= */}
         <NavLink
-          to="/validator"
+          to="/chatbot"
           className="absolute left-6 md:left-16 top-1/2 -translate-y-80 group z-10"
         >
           <motion.div
