@@ -10,7 +10,7 @@ const Headlines = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Backend URL
-  const backendUrl = "http://localhost:4000"; // Change this to your deployed backend when needed
+  const backendUrl = "https://no-fake-samacharbackend.onrender.com"; // Change this to your deployed backend when needed
 
   const fetchNews = async () => {
     setLoading(true);
