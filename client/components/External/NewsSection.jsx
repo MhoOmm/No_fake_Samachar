@@ -5,17 +5,22 @@ import axios from "axios";
 const NewsSection = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [country, setCountry] = useState("us");
+const [category, setCategory] = useState("technology");
 
   // Backend URL
-  const backendUrl = "https://no-fake-samacharbackend.onrender.com";
+  const backendUrl = "https://no-fake-samacharbackend.onrender.com"; // Change this to your deployed backend when needed
 
   const fetchNews = async () => {
     setLoading(true);
     try {
+      // Call your backend route
       const response = await axios.get(`${backendUrl}/api/news`, {
-        params: { country: "us", category: "technology" },
+        params: { country, category },
       });
+
       setArticles(response.data.articles || []);
+      setCurrentIndex(0);
     } catch (err) {
       console.error("Error fetching news:", err);
       setArticles([]);
