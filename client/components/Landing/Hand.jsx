@@ -85,7 +85,7 @@ const Hand = () => {
       {/* ================= RIGHT ================= */}
       <NavLink
         to="/pramaanchatbot"
-        className="absolute right-6 md:right-16 top-1/2 -translate-y-76 group z-10"
+        className="absolute right-6 md:right-16 top-1/2 -translate-y-76 lg:-translate-y-86 group z-10"
       >
         <motion.div
           whileHover={{ y: 12 }}
