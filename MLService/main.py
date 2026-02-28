@@ -1,28 +1,36 @@
-# ml-service/main.py
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from predict import hf_model_predict, second_model_predict
+# ml-service/predict.py
+import os
+from huggingface_hub import InferenceClient
 
-app = FastAPI(title="Fake News Analyzer")
+# Initialize HF client once (reuse for all requests)
+HF_API_KEY = os.getenv("HF_API_KEY", "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")
 
-class AnalyzeRequest(BaseModel):
-    text: str
+client = InferenceClient(
+    provider="hf-inference",
+    api_key=HF_API_KEY
+)
 
-# Endpoint for HF RoBERTa model
-@app.post("/analyze/hf")
-def analyze_hf(request: AnalyzeRequest):
-    if not request.text:
-        raise HTTPException(status_code=400, detail="Text is required")
-    return hf_model_predict(request.text)
+HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1"
 
-# Endpoint for second model
-@app.post("/analyze/second")
-def analyze_second(request: AnalyzeRequest):
-    if not request.text:
-        raise HTTPException(status_code=400, detail="Text is required")
-    return second_model_predict(request.text)
+def hf_model_predict(text: str):
+    """
+    Predicts if text is AI-generated using Hugging Face RoBERTa model.
+    Returns structured output.
+    """
+    try:
+        # Use explicit 'inputs' and 'model' for clarity
+        result = client.text_classification(
+            model=HF_MODEL,
+            inputs=text
+        )
+        # result is usually a list of dicts: [{"label": "...", "score": ...}]
+        return {"prediction": result}
+    except Exception as e:
+        return {"error": str(e)}
 
-# Health check
-@app.get("/health")
-def health_check():
-    return {"status": "OK"}
+def second_model_predict(text: str):
+    """
+    Placeholder for second model. Replace with actual prediction logic.
+    """
+    # Example dummy prediction
+    return {"prediction": {"label": "neutral", "score": 1.0}}
