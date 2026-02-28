@@ -27,9 +27,7 @@ const Pramaan = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ===============================
-  // 🔵 FETCH NEWS
-  // ===============================
+  // =============================== FETCH NEWS ===============================
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -44,8 +42,6 @@ const Pramaan = () => {
         setArticles(validArticles);
       } catch (error) {
         console.error("News fetch error:", error);
-
-        // fallback demo content
         setArticles([
           {
             title: "Live News Unavailable",
@@ -61,7 +57,6 @@ const Pramaan = () => {
     fetchNews();
   }, []);
 
-
   useEffect(() => {
     if (articles.length === 0) return;
 
@@ -74,7 +69,7 @@ const Pramaan = () => {
     return () => clearInterval(interval);
   }, [articles]);
 
-
+  // =============================== SUBMIT TO PRAMAAN BACKEND ===============================
   const onSubmit = async (data) => {
     if (!data.message) return;
 
@@ -85,25 +80,34 @@ const Pramaan = () => {
 
     try {
       const response = await axios.post(
-        "YOUR_BACKEND_API_ENDPOINT",
-        { message: data.message }
+        "http://localhost:4000/api/chatbot/pramaan",
+        { text: data.message }
       );
 
+      const reply = response.data.reply;
+
+      if (typeof reply === "object" && reply !== null) {
+        // Store structured object directly
+        setMessages((prev) => [
+          ...prev,
+          { role: "model", parts: [{ text: reply }] },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "model",
+            parts: [{ text: reply || "No explanation generated." }],
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error calling Pramaan:", error);
       setMessages((prev) => [
         ...prev,
         {
           role: "model",
-          parts: [
-            { text: response.data.message || "No explanation generated." },
-          ],
-        },
-      ]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "model",
-          parts: [{ text: "Editorial system encountered an issue." }],
+          parts: [{ text: "Pramaan AI encountered an error." }],
         },
       ]);
     } finally {
@@ -117,7 +121,6 @@ const Pramaan = () => {
 
         {/* ================= LEFT — BIG ROTATING NEWS PANEL ================= */}
         <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-charcoal min-h-[500px]">
-
           {newsLoading ? (
             <div className="flex items-center justify-center h-full bg-[#0f172a] text-white text-xl">
               Loading Live News...
@@ -129,18 +132,12 @@ const Pramaan = () => {
                 alt="Live News"
                 className="w-full h-full object-cover transition-all duration-700 ease-in-out"
               />
-
-              {/* Navy Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/95 via-[#0f172a]/60 to-transparent"></div>
-
-              {/* Headline */}
               <div className="absolute bottom-0 p-8 text-white">
                 <h2 className="font-heading text-3xl md:text-4xl leading-snug">
                   {articles[currentIndex]?.title}
                 </h2>
-
                 <div className="w-24 h-[4px] bg-newsred mt-4"></div>
-
                 <p className="text-sm mt-4 opacity-80">
                   Rotating real-time headlines • Updates every 5 seconds
                 </p>
@@ -151,7 +148,6 @@ const Pramaan = () => {
 
         {/* ================= RIGHT — CHATBOT ================= */}
         <div className="border border-charcoal shadow-2xl flex flex-col h-[80vh] rounded-2xl overflow-hidden bg-white">
-
           <div className="bg-[#0f172a] text-white px-6 py-4">
             <h2 className="font-heading text-2xl uppercase tracking-widest">
               Pramaan AI
@@ -165,21 +161,57 @@ const Pramaan = () => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${
-                  msg.role === "user"
-                    ? "justify-end"
-                    : "justify-start"
-                }`}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
                   className={`px-4 py-3 max-w-[80%] text-sm md:text-base rounded-lg shadow-sm
-                    ${
-                      msg.role === "user"
-                        ? "bg-newsred text-white"
-                        : "bg-[#e2e8f0] border-l-4 border-[#0f172a] text-charcoal"
-                    }`}
+                    ${msg.role === "user" ? "bg-newsred text-black" : "bg-[#e2e8f0] border-l-4 border-[#0f172a] text-charcoal"}`}
                 >
-                  {msg.parts[0].text}
+                  {typeof msg.parts[0].text === "string" ? (
+                    msg.parts[0].text
+                  ) : (
+                    <div className="space-y-2">
+                      {/* Label */}
+                      {msg.parts[0].text.label && (
+                        <p><strong>Label:</strong> {msg.parts[0].text.label}</p>
+                      )}
+
+                      {/* Explanation / Points */}
+                      {msg.parts[0].text.points && (
+                        <div>
+                          <strong>Reasons it may be AI-generated / Fake:</strong>
+                          <ul className="list-disc list-inside mt-1">
+                            {msg.parts[0].text.points.map((point, i) => (
+                              <li key={i}>{point}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Keywords */}
+                      {msg.parts[0].text.keywords && msg.parts[0].text.keywords.length > 0 && (
+                        <p>
+                          <strong>Key phrases detected:</strong>{" "}
+                          {msg.parts[0].text.keywords.join(", ")}
+                        </p>
+                      )}
+
+                      {/* Report Info */}
+                      {msg.parts[0].text.report_info && (
+                        <p>
+                          <strong>Report:</strong>{" "}
+                          <a
+                            href={msg.parts[0].text.report_info.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-newsred underline"
+                          >
+                            {msg.parts[0].text.report_info.message}
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -204,7 +236,6 @@ const Pramaan = () => {
               className="flex-1 p-3 border border-charcoal rounded-lg focus:outline-none focus:ring-2 focus:ring-newsred"
               placeholder="Ask why this news might be fake..."
             />
-
             <button
               type="submit"
               className="bg-[#0f172a] text-white px-5 py-3 rounded-lg hover:bg-[#1e293b] transition"
