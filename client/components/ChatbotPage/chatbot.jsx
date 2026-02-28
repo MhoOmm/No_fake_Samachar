@@ -7,33 +7,39 @@ const Chatbot = () => {
   const [mode, setMode] = useState("ai");
   const [lastAnalyzedInput, setLastAnalyzedInput] = useState("");
 
-  const handleAnalyze = () => {
+  // ------------------------------
+  // HANDLE ANALYZE (CALL APIs)
+  // ------------------------------
+  const handleAnalyze = async () => {
     if (!input.trim() || input === lastAnalyzedInput) return;
 
-    const isFake = input.length % 3 === 0;
-    const isAI = input.length % 4 === 0;
+    try {
+      if (mode === "ai") {
+        // Call AI Detection API
+        const res = await fetch("http://localhost:4000/api/chatbot/analyze/hf", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: input }),
+        });
+        const data = await res.json();
+        setAiResult(data);
+        setFakeResult(null);
+      } else {
+        // Call Fake News API
+        const res = await fetch("http://localhost:4000/api/chatbot/analyze/second", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: input }),
+        });
+        const data = await res.json();
+        setFakeResult(data);
+        setAiResult(null);
+      }
 
-    if (mode === "ai") {
-      const result = {
-        aiProbability: isAI ? 78 : 23,
-        credibilityScore: isAI ? 32 : 87,
-        verdict: isAI ? "AI Generated" : "Human Written",
-        details: isAI ? "AI generation patterns detected in text structure" : "Natural human writing patterns confirmed",
-      };
-      setAiResult(result);
-      setFakeResult(null);
-    } else {
-      const result = {
-        aiProbability: isFake ? 65 : 12,
-        credibilityScore: isFake ? 28 : 92,
-        verdict: isFake ? "Fake News" : "Legitimate",
-        details: isFake ? "Suspicious content markers and inconsistencies found" : "Verified against trusted sources",
-      };
-      setFakeResult(result);
-      setAiResult(null);
+      setLastAnalyzedInput(input);
+    } catch (err) {
+      console.error("Error analyzing text:", err);
     }
-    
-    setLastAnalyzedInput(input);
   };
 
   const handleKeyPress = (e) => {
@@ -42,6 +48,9 @@ const Chatbot = () => {
     }
   };
 
+  // ------------------------------
+  // AI DETECTION RESULT COMPONENT
+  // ------------------------------
   const AiDetectionResult = ({ result }) => (
     <div className="border-4 border-black rounded-3xl p-8 space-y-8 bg-white shadow-2xl">
       <div className="text-center mb-8">
@@ -93,6 +102,9 @@ const Chatbot = () => {
     </div>
   );
 
+  // ------------------------------
+  // FAKE NEWS RESULT COMPONENT
+  // ------------------------------
   const FakeNewsResult = ({ result }) => (
     <div className="border-4 border-black rounded-3xl p-8 space-y-8 bg-white shadow-2xl">
       <div className="text-center mb-8">
@@ -142,32 +154,29 @@ const Chatbot = () => {
     </div>
   );
 
+  // ------------------------------
+  // RENDER
+  // ------------------------------
   return (
     <div className="min-h-screen bg-offwhite flex flex-col">
       {/* TOP SECTION */}
       <div className="bg-charcoal text-black">
-        {/* Centered Title Block */}
         <div className="max-w-5xl mx-auto text-center py-12 px-6">
-  <h1 className="text-6xl md:text-7xl font-header font-bold tracking-tight mb-6 text-black leading-tight">
-    Nishpaksh
-  </h1>
-  <div className="w-32 h-1 bg-black mx-auto mb-8 rounded-full"></div>
-  <p className="text-xl md:text-2xl font-light max-w-2xl mx-auto leading-relaxed text-black/80">
-    Uncover the truth behind every word — our ML-powered detector instantly reveals whether your text is AI-generated or Fake.
-  </p>
-</div>
+          <h1 className="text-6xl md:text-7xl font-header font-bold tracking-tight mb-6 text-black leading-tight">
+            Nishpaksh
+          </h1>
+          <div className="w-32 h-1 bg-black mx-auto mb-8 rounded-full"></div>
+          <p className="text-xl md:text-2xl font-light max-w-2xl mx-auto leading-relaxed text-black/80">
+            Uncover the truth behind every word — our ML-powered detector instantly reveals whether your text is AI-generated or Fake.
+          </p>
+        </div>
 
-
-        {/* FULL WIDTH BLACK BAR */}
         <div className="w-full bg-black/80 border-y border-white/10">
           <div className="flex flex-col md:flex-row justify-center items-center px-20 py-8 gap-18">
-            {/* CARD 1 */}
             <div className="flex items-center gap-6">
               <h3 className="font-semibold text-2xl text-white">AI Detection</h3>
               <p className="text-white/80 text-lg">92% accuracy rate</p>
             </div>
-
-            {/* CARD 2 */}
             <div className="flex items-center gap-6">
               <h3 className="font-semibold text-2xl text-white">Fact Checking</h3>
               <p className="text-white/80 text-lg">500+ trusted sources</p>
@@ -179,7 +188,6 @@ const Chatbot = () => {
       {/* BOTTOM SECTION */}
       <div className="flex-1 bg-white border-t-4 border-black p-12 flex flex-col justify-center">
         <div className="max-w-2xl mx-auto w-full space-y-8">
-
           {/* MODE BUTTONS */}
           <div className="flex gap-4 justify-center">
             <button
@@ -210,18 +218,14 @@ const Chatbot = () => {
           {/* HEADER */}
           <div className="text-center space-y-2 border-b border-black/20 pb-8">
             <p className="text-2xl text-black/60 font-semibold">
-              {mode === "ai"
-                ? "Check if text is AI generated"
-                : "Verify if news is fake"}
+              {mode === "ai" ? "Check if text is AI generated" : "Verify if news is fake"}
             </p>
           </div>
 
           {/* INPUT */}
           <textarea
             rows="4"
-            placeholder={`Paste your ${
-              mode === "ai" ? "text" : "news/article"
-            } here for analysis...`}
+            placeholder={`Paste your ${mode === "ai" ? "text" : "news/article"} here for analysis...`}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
@@ -237,22 +241,19 @@ const Chatbot = () => {
             Analyze Text
           </button>
 
-          {/* RESULTS - MODE SPECIFIC */}
+          {/* RESULTS */}
           {mode === "ai" && aiResult && <AiDetectionResult result={aiResult} />}
           {mode === "fake" && fakeResult && <FakeNewsResult result={fakeResult} />}
         </div>
       </div>
+
       <footer className="bg-black text-white py-4 px-6 border-t-2 border-black">
-  <div className="text-center text-sm tracking-wider uppercase font-mono">
-    © 2026 NO Fake समाचार. All rights reserved. | Made with precision for truth.
-  </div>
-</footer>
+        <div className="text-center text-sm tracking-wider uppercase font-mono">
+          © 2026 NO Fake समाचार. All rights reserved. | Made with precision for truth.
+        </div>
+      </footer>
     </div>
-    
   );
 };
 
 export default Chatbot;
-
-
-

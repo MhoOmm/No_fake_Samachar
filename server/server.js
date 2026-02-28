@@ -8,7 +8,7 @@ const chatbotRoutes = require("./routes/chatbotRoutes");
 
 const app = express();
 
-connect();
+// connect();
 
 // Chatbot API
 app.use("/api/chatbot", chatbotRoutes);
