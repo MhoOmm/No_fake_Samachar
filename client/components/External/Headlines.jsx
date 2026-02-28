@@ -14,7 +14,7 @@ const Headlines = () => {
     try {
       // Try top-headlines first
       let response = await axios.get(
-        `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&pageSize=10&apiKey=5ca44e06899247f18e6ec93a74b9870b`
+        `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&pageSize=10&apiKey=${process.env.NewsApi}`
       );
       
       console.log("Top headlines response:", response.data);

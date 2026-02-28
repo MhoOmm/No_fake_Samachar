@@ -16,7 +16,7 @@ const Chatbot = () => {
     try {
       if (mode === "ai") {
         // Call AI Detection API
-        const res = await fetch("http://localhost:4000/api/chatbot/analyze/hf", {
+        const res = await fetch("http://no-fake-samacharbackend.onrender.com/api/chatbot/analyze/hf", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: input }),
@@ -26,7 +26,7 @@ const Chatbot = () => {
         setFakeResult(null);
       } else {
         // Call Fake News API
-        const res = await fetch("http://localhost:4000/api/chatbot/analyze/second", {
+        const res = await fetch("http://no-fake-samacharbackend.onrender.com/api/chatbot/analyze/second", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ text: input }),
