@@ -48,6 +48,7 @@ const Hand = () => {
           className="absolute inset-0 w-full h-full object-contain -translate-y-5 pointer-events-none"
         />
 
+
         {/* ================= LEFT ================= */}
         <NavLink
           to="/validator"
