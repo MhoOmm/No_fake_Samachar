@@ -6,7 +6,6 @@ import Aboutus from "../components/External/Aboutus";
 import Pramaan from "../components/External/PramaanChatbot";
 import Headlines from '../components/External/Headlines';
 import FullNews from '../components/External/FullNews';
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Lenis from 'lenis';
 
@@ -30,7 +29,7 @@ function App() {
     <Router>
       <Heading />
       <Routes>
-        <Route path="/" element={<Hand />} />
+        <Route path="/" element={<><Hand /></>} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/pramaanchatbot" element={<Pramaan />} />
         <Route path="/headlines" element={<Headlines />} />
