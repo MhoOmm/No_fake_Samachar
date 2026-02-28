@@ -4,7 +4,7 @@ import Heading from "../components/Landing/Heading";
 import Hand from "../components/Landing/Hand";
 import Aboutus from "../components/External/Aboutus";
 import Pramaan from "../components/External/PramaanChatbot";
-
+import NewsSection from '../components/External/NewsSection';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Lenis from 'lenis';
 
@@ -28,7 +28,7 @@ function App() {
     <Router>
       <Heading />
       <Routes>
-        <Route path="/" element={<Hand />} />
+        <Route path="/" element={<><Hand /></>} />
         <Route path="/about" element={<Aboutus />} />
         <Route path="/pramaanchatbot" element={<Pramaan />} />
       </Routes>
