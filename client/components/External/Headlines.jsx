@@ -9,28 +9,19 @@ const Headlines = () => {
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Backend URL
+  const backendUrl = "http://localhost:4000"; // Change this to your deployed backend when needed
+
   const fetchNews = async () => {
     setLoading(true);
     try {
-      // Try top-headlines first
-      let response = await axios.get(
-        `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&pageSize=10&apiKey=${process.env.NewsApi}`
-      );
-      
-      console.log("Top headlines response:", response.data);
-      
-      // If no articles, try 'everything' endpoint as fallback
-      if (!response.data.articles || response.data.articles.length === 0) {
-        console.log("No articles from top-headlines, trying everything endpoint...");
-        response = await axios.get(
-          `https://newsapi.org/v2/everything?q=${category}&language=en&sortBy=publishedAt&pageSize=10&apiKey=5ca44e06899247f18e6ec93a74b9870b`
-        );
-        console.log("Everything endpoint response:", response.data);
-      }
-      
+      // Call your backend route
+      const response = await axios.get(`${backendUrl}/api/news`, {
+        params: { country, category },
+      });
+
       setArticles(response.data.articles || []);
       setCurrentIndex(0);
-      console.log("Final articles set:", response.data.articles?.length || 0);
     } catch (err) {
       console.error("Error fetching news:", err);
       setArticles([]);
@@ -40,6 +31,7 @@ const Headlines = () => {
 
   useEffect(() => {
     fetchNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleScroll = (e) => {
@@ -52,12 +44,11 @@ const Headlines = () => {
 
   return (
     <div className="h-screen flex flex-col bg-offwhite">
-      {/* Newspaper Header */}
+      {/* Header */}
       <div className="bg-charcoal text-offwhite border-b-4 border-charcoal">
-        {/* Controls */}
         <div className="px-4 pb-5">
           <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
-            <div className="flex items-center gap-2  ">
+            <div className="flex items-center gap-2">
               <label className="text-[10px] uppercase tracking-widest font-bold">
                 Edition:
               </label>
@@ -104,7 +95,7 @@ const Headlines = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="flex-1 relative overflow-hidden">
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-offwhite z-10">
@@ -131,7 +122,7 @@ const Headlines = () => {
         )}
 
         {!loading && articles.length > 0 && (
-          <div 
+          <div
             className="h-full overflow-y-auto snap-y snap-mandatory"
             onScroll={handleScroll}
           >
@@ -146,7 +137,7 @@ const Headlines = () => {
                   transition={{ duration: 0.4 }}
                   className="bg-charcoal text-offwhite w-full max-w-md h-[85vh] border-8 border-charcoal shadow-2xl overflow-hidden flex flex-col"
                 >
-                  {/* Image Section */}
+                  {/* Image */}
                   <div className="relative h-[45%] border-b-4 border-offwhite/20">
                     {article.urlToImage ? (
                       <img
@@ -154,7 +145,8 @@ const Headlines = () => {
                         alt={article.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/600x400/2B2B2B/F0F0F0?text=No+Image";
+                          e.target.src =
+                            "https://via.placeholder.com/600x400/2B2B2B/F0F0F0?text=No+Image";
                         }}
                       />
                     ) : (
@@ -164,39 +156,38 @@ const Headlines = () => {
                         </span>
                       </div>
                     )}
-                    {/* Story Badge */}
                     <div className="absolute top-4 left-4 bg-offwhite text-white px-3 py-1 text-xs font-bold tracking-widest">
                       STORY {String(i + 1).padStart(2, "0")}
                     </div>
                   </div>
 
-                  {/* Content Section */}
+                  {/* Content */}
                   <div className="flex-1 p-6 flex flex-col overflow-hidden">
-                    {/* Source and Date */}
                     <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-offwhite/60 mb-4 pb-3 border-b border-offwhite/10">
                       <span className="font-bold">
                         {article.source?.name || "Unknown Source"}
                       </span>
                       <span>
-                        {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
+                        {new Date(article.publishedAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          }
+                        )}
                       </span>
                     </div>
 
-                    {/* Title */}
                     <h2 className="font-header text-2xl sm:text-3xl leading-tight mb-4 text-offwhite">
                       {article.title}
                     </h2>
 
-                    {/* Description */}
                     <div className="flex-1 overflow-y-auto mb-4">
                       <p className="text-offwhite/90 text-base leading-relaxed">
-                        {article.description || "No description available for this article."}
+                        {article.description ||
+                          "No description available for this article."}
                       </p>
-                      
                       {article.author && (
                         <p className="text-offwhite/50 text-sm italic mt-3">
                           — {article.author}
@@ -204,7 +195,6 @@ const Headlines = () => {
                       )}
                     </div>
 
-                    {/* CTA Button */}
                     <a
                       href={article.url}
                       target="_blank"
@@ -215,16 +205,13 @@ const Headlines = () => {
                     </a>
                   </div>
 
-                  {/* Bottom Decoration */}
                   <div className="h-2 bg-offwhite/10"></div>
                 </motion.div>
               </div>
             ))}
           </div>
-          
         )}
 
-        {/* Scroll Indicator */}
         {!loading && articles.length > 0 && currentIndex < articles.length - 1 && (
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
             <div className="bg-charcoal/90 text-offwhite px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold backdrop-blur-sm border border-offwhite/20">
@@ -233,7 +220,6 @@ const Headlines = () => {
           </div>
         )}
 
-        {/* Story Counter */}
         {!loading && articles.length > 0 && (
           <div className="absolute top-4 right-4 bg-charcoal/90 text-offwhite px-3 py-2 rounded-full text-xs font-bold backdrop-blur-sm border border-offwhite/20 z-20">
             {currentIndex + 1} / {articles.length}
