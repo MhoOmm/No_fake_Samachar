@@ -39,7 +39,7 @@ const Hand = () => {
 
   return (
     <>
-      <section className="relative w-full h-screen bg-gradient-to-b from-white via-offwhite to-white overflow-hidden flex items-center justify-center">
+      <section className="relative w-full min-h-screen bg-gradient-to-b from-white via-offwhite to-white overflow-hidden flex items-center justify-center">
 
         {/* BACKGROUND IMAGE */}
         <img
@@ -108,9 +108,50 @@ const Hand = () => {
         </NavLink>
 
         {/* ================= NEWS BULLETIN SECTION ================= */}
-        
 
       </section>
+ 
+      {/* MODE BUTTONS */}
+      <div className="w-full flex justify-center mb-16">
+        <div className="flex gap-6 ">
+          {/* ===== Inshorts Button ===== */}
+          <NavLink to="/fullnews">
+            <button className="py-8 px-16 text-3xl font-bold rounded-2xl border-2 border-black bg-white text-black-700 hover:bg-newsred hover:text-white hover:bg-black transition-all duration-300 shadow-sm">
+              FullStory
+            </button>
+          </NavLink>
+
+          {/* ===== Bulletin Button ===== */}
+          <NavLink to="/headlines">
+            <button className="py-8 px-16 text-3xl font-bold rounded-2xl border-2 border-black bg-white text-black-700 hover:bg-newsred hover:text-white hover:bg-black transition-all duration-300 shadow-sm">
+              Bulletins
+            </button>
+          </NavLink>
+        </div>
+      </div>
+
+
+      {/* OHM KA ABOUT US.. */}
+      <section className="w-full bg-gradient-to-b from-white via-offwhite to-white py-20 flex flex-col items-center text-center">
+        {/* Section Title */}
+        <h2 className="text-4xl md:text-5xl font-bold text-newsred mb-6">
+          WANNA KNOW HOW WE WORK?
+        </h2>
+
+        {/* Optional Description */}
+        <p className="max-w-2xl text-[#2B2B2B] text-lg md:text-xl mb-10">
+          Discover our process and how we make things happen efficiently.  
+          From ideation to execution, transparency and innovation are at the core.
+        </p>
+
+        {/* NavLink Button */}
+        <NavLink to="/about">
+          <button className="py-5 px-14 text-2xl font-semibold rounded-2xl border-2 border-newsred bg-white text-newsred hover:bg-black hover:text-white transition-all duration-300 shadow-md">
+            Learn More
+          </button>
+        </NavLink>
+      </section>
+
 
       {/* ================= BLACK FOOTER ================= */}
       <footer className="bg-black text-white py-10 text-center">
