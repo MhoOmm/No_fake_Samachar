@@ -1,67 +1,36 @@
-# MLService/main.py
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from predict import hf_model_predict, second_model_predict
-import pickle
+# ml-service/predict.py
 import os
+from huggingface_hub import InferenceClient
 
-# ==========================
-# ✅ Setup paths
-# ==========================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "second_model.pkl")
-VECTORIZER_PATH = os.path.join(BASE_DIR, "models", "vectorizer.pkl")
+# Initialize HF client once (reuse for all requests)
+HF_API_KEY = os.getenv("HF_API_KEY", "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")
 
-# ==========================
-# ✅ Load model and vectorizer
-# ==========================
-with open(MODEL_PATH, "rb") as f:
-    second_model = pickle.load(f)
+client = InferenceClient(
+    provider="hf-inference",
+    api_key=HF_API_KEY
+)
 
-with open(VECTORIZER_PATH, "rb") as f:
-    vectorizer = pickle.load(f)
+HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1"
 
-# ==========================
-# ✅ FastAPI App
-# ==========================
-app = FastAPI(title="Fake News Analyzer")
-
-# Request body
-class AnalyzeRequest(BaseModel):
-    text: str
-
-# ==========================
-# Helper prediction function
-# ==========================
-def second_model_predict(text: str):
-    if not text.strip():
-        return {"error": "Text is empty"}
-    
-    X = vectorizer.transform([text])
-    pred = second_model.predict(X)
-    return {"prediction": str(pred[0])}
-
-# Placeholder for HF model if needed
 def hf_model_predict(text: str):
-    # Add HuggingFace RoBERTa model code here
-    return {"prediction": "hf-model-placeholder"}
+    """
+    Predicts if text is AI-generated using Hugging Face RoBERTa model.
+    Returns structured output.
+    """
+    try:
+        # Use explicit 'inputs' and 'model' for clarity
+        result = client.text_classification(
+            model=HF_MODEL,
+            inputs=text
+        )
+        # result is usually a list of dicts: [{"label": "...", "score": ...}]
+        return {"prediction": result}
+    except Exception as e:
+        return {"error": str(e)}
 
-# ==========================
-# Endpoints
-# ==========================
-@app.post("/analyze/second")
-def analyze_second(request: AnalyzeRequest):
-    if not request.text:
-        raise HTTPException(status_code=400, detail="Text is required")
-    return second_model_predict(request.text)
-
-@app.post("/analyze/hf")
-def analyze_hf(request: AnalyzeRequest):
-    if not request.text:
-        raise HTTPException(status_code=400, detail="Text is required")
-    return hf_model_predict(request.text)
-
-# Health check
-@app.get("/health")
-def health_check():
-    return {"status": "OK"}
+def second_model_predict(text: str):
+    """
+    Placeholder for second model. Replace with actual prediction logic.
+    """
+    # Example dummy prediction
+    return {"prediction": {"label": "neutral", "score": 1.0}}
