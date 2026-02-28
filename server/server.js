@@ -4,10 +4,14 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const { connect } = require("./config/db");
+const chatbotRoutes = require("./routes/chatbotRoutes");
 
 const app = express();
 
 connect();
+
+// Chatbot API
+app.use("/api/chatbot", chatbotRoutes);
 
 app.use(cookieParser());
 app.use(cors({
