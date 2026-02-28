@@ -16,9 +16,10 @@ const NewsSection = () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get(`${backendUrl}/api/news`, {
-        params: { country, category },
-      });
+      const backendUrl = "https://no-fake-samacharbackend.onrender.com"; // correct backend
+const response = await axios.get(`${backendUrl}/api/news`, {
+  params: { country, category },
+});
 
       if (!response.data.articles || response.data.articles.length === 0) {
         setError("No news articles available for this selection.");
