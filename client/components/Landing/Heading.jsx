@@ -20,24 +20,26 @@ const Heading = () => {
     "AI CONTENT DETECTION ENABLED",
     "FAKE NEWS MONITORING LIVE",
   ];
-// Fetch Real News (Left → Right)
+
+  // Backend URL
+  const backendUrl = "https://no-fake-samacharbackend.onrender.com";
+
+  // Fetch Real News (Left → Right)
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get(
-          `https://newsapi.org/v2/everything?q=india&sortBy=publishedAt&pageSize=5&apiKey=31f410f69a7e45ea9c62e24faa7b1993`
-        );
+        const response = await axios.get(`${backendUrl}/api/news`, {
+          params: { country: "in", category: "general" }, // adjust category if needed
+        });
 
-        const titles = response.data.articles.map(
+        const titles = (response.data.articles || []).map(
           (article) => article.title
         );
 
         setHeadlines(titles);
       } catch (error) {
         console.error("Error fetching news:", error);
-        setHeadlines([
-          "LIVE UPDATE • Unable to fetch headlines",
-        ]);
+        setHeadlines(["LIVE UPDATE • Unable to fetch headlines"]);
       } finally {
         setLoading(false);
       }
@@ -72,7 +74,6 @@ const Heading = () => {
 
       {/* 🔹 MASTHEAD */}
       <div className="flex flex-col md:flex-row items-center justify-between px-6 md:px-12 py-6">
-
         <div className="mb-3 md:mb-0">
           <img
             src={logo}
@@ -95,8 +96,9 @@ const Heading = () => {
 
         <div className="hidden md:block w-20"></div>
       </div>
-      <div className="bg-black overflow-hidden relative border-t border-charcoal">
 
+      {/* 🔹 NEWS HEADLINES TICKER (LEFT → RIGHT) */}
+      <div className="bg-black overflow-hidden relative border-t border-charcoal">
         <div className="pl-24">
           <div className="ticker-ltr flex items-center py-6">
             {!loading &&
@@ -111,9 +113,7 @@ const Heading = () => {
               ))}
           </div>
         </div>
-
       </div>
-
     </header>
   );
 };
