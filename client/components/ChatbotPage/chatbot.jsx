@@ -5,19 +5,22 @@ const Chatbot = () => {
   const [aiResult, setAiResult] = useState(null);
   const [fakeResult, setFakeResult] = useState(null);
   const [mode, setMode] = useState("ai");
-  const [lastAnalyzedInput, setLastAnalyzedInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // const BACKEND_URL = "http://localhost:4000";
-  const BACKEND_URL = "https://no-fake-samacharbackend.onrender.com";
+  const BACKEND_URL = "http://localhost:4000";
 
   const handleAnalyze = async () => {
-    if (!input.trim() || input === lastAnalyzedInput) return;
+    if (!input.trim()) return;
+
+    setLoading(true);
+    setAiResult(null);
+    setFakeResult(null);
 
     try {
       const endpoint =
         mode === "ai"
           ? "/api/chatbot/analyze/hf"
-          : "/api/chatbot/analyze/second";
+          : "/api/chatbot/analyze/fakenews";
 
       const res = await fetch(BACKEND_URL + endpoint, {
         method: "POST",
@@ -34,24 +37,15 @@ const Chatbot = () => {
 
       if (mode === "ai") {
         setAiResult(data);
-        setFakeResult(null);
       } else {
         setFakeResult(data);
-        setAiResult(null);
       }
-
-      setLastAnalyzedInput(input);
     } catch (err) {
       console.error("Error analyzing text:", err);
       alert("Failed to analyze text. Check console for details.");
     }
-  };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleAnalyze();
-    }
+    setLoading(false);
   };
 
   return (
@@ -66,11 +60,10 @@ const Chatbot = () => {
       {/* MAIN */}
       <main className="flex-1 p-12 max-w-5xl mx-auto w-full space-y-10">
 
-        {/* Mode Toggle */}
+        {/* MODE TOGGLE */}
         <div className="flex gap-6 justify-center">
           <button
             onClick={() => setMode("ai")}
-            disabled={mode === "ai"}
             className={`px-10 py-4 rounded-xl border-2 font-semibold transition ${
               mode === "ai"
                 ? "bg-black text-white border-black"
@@ -82,7 +75,6 @@ const Chatbot = () => {
 
           <button
             onClick={() => setMode("fake")}
-            disabled={mode === "fake"}
             className={`px-10 py-4 rounded-xl border-2 font-semibold transition ${
               mode === "fake"
                 ? "bg-black text-white border-black"
@@ -93,30 +85,29 @@ const Chatbot = () => {
           </button>
         </div>
 
-        {/* TEXT INPUT */}
+        {/* TEXTAREA */}
         <textarea
-          rows="4"
+          rows="5"
           placeholder="Paste your text here..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyPress}
           className="w-full p-6 rounded-xl border-2 border-black/30 focus:border-black outline-none text-lg resize-none"
         />
 
         {/* ANALYZE BUTTON */}
         <button
           onClick={handleAnalyze}
-          disabled={!input.trim() || input === lastAnalyzedInput}
-          className="w-full py-5 bg-black text-white rounded-xl text-xl font-semibold hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          disabled={loading || !input.trim()}
+          className="w-full py-5 bg-black text-white rounded-xl text-xl font-semibold hover:bg-gray-900 disabled:bg-gray-400"
         >
-          Analyze Text
+          {loading ? "Analyzing..." : "Analyze Text"}
         </button>
 
-        {/* ================= AI RESULT UI ================= */}
+        {/* ================= AI RESULT ================= */}
         {mode === "ai" && aiResult && (
           <div className="mt-16 grid md:grid-cols-2 gap-12">
 
-            {/* LEFT CARD - CIRCLE */}
+            {/* LEFT CARD */}
             <div className="border-2 border-black rounded-3xl p-10 text-center bg-white">
               <h2 className="text-2xl font-bold mb-10 tracking-wide">
                 AI PROBABILITY
@@ -136,37 +127,30 @@ const Chatbot = () => {
             {/* RIGHT CARD */}
             <div className="border-2 border-black rounded-3xl p-10 bg-white space-y-10">
 
-              {/* Verdict Box */}
               <div className="bg-black text-white py-8 rounded-2xl text-center">
                 <h3 className="text-3xl font-bold tracking-wide">
                   {aiResult.verdict}
                 </h3>
               </div>
 
-              {/* AI vs Human */}
               <div className="flex justify-between items-center text-center">
                 <div>
                   <p className="text-4xl font-bold">
                     {aiResult.aiProbability}%
                   </p>
-                  <p className="mt-2 text-sm tracking-wide">
-                    AI SCORE
-                  </p>
+                  <p className="mt-2 text-sm tracking-wide">AI SCORE</p>
                 </div>
 
                 <div className="h-16 w-px bg-black"></div>
 
                 <div>
                   <p className="text-4xl font-bold">
-                    {100 - aiResult.aiProbability}
+                    {100 - aiResult.aiProbability}%
                   </p>
-                  <p className="mt-2 text-sm tracking-wide">
-                    HUMAN SCORE
-                  </p>
+                  <p className="mt-2 text-sm tracking-wide">HUMAN SCORE</p>
                 </div>
               </div>
 
-              {/* DETAILS */}
               <div className="border-2 border-black rounded-2xl p-6">
                 <h4 className="text-xl font-bold mb-4 tracking-wide">
                   DETECTION DETAILS
@@ -180,12 +164,34 @@ const Chatbot = () => {
           </div>
         )}
 
+        {/* ================= FAKE NEWS RESULT ================= */}
+        {mode === "fake" && fakeResult && (
+          <div className="mt-16 border-2 border-black rounded-3xl p-12 bg-white text-center space-y-8">
+
+            <h2 className="text-3xl font-bold tracking-wide">
+              FAKE NEWS RESULT
+            </h2>
+
+            <div className="w-60 h-60 mx-auto rounded-full border-4 border-black flex items-center justify-center">
+              <span className="text-6xl font-bold">
+                {fakeResult.confidence}%
+              </span>
+            </div>
+
+            <p className="text-2xl font-semibold">
+              {fakeResult.verdict}
+            </p>
+
+          </div>
+        )}
+
       </main>
 
       {/* FOOTER */}
       <footer className="bg-black text-white text-center py-6 text-sm tracking-wider">
         © 2026 NO Fake समाचार
       </footer>
+
     </div>
   );
 };
