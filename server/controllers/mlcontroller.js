@@ -5,7 +5,7 @@ const analyzeWithModel = async (req, res) => {
     const { text } = req.body;
 
     const response = await axios.post(
-      "http://localhost:3000/predict",
+      "https://no-fake-samachar-mlservice.onrender.com/predict",
       { text }
     );
 
