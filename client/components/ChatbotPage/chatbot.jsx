@@ -7,8 +7,8 @@ const Chatbot = () => {
   const [mode, setMode] = useState("ai");
   const [lastAnalyzedInput, setLastAnalyzedInput] = useState("");
 
-  const BACKEND_URL = "http://localhost:4000";
-  // const BACKEND_URL = "https://no-fake-samacharbackend.onrender.com";
+  // const BACKEND_URL = "http://localhost:4000";
+  const BACKEND_URL = "https://no-fake-samacharbackend.onrender.com";
 
   const handleAnalyze = async () => {
     if (!input.trim() || input === lastAnalyzedInput) return;
