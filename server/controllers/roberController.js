@@ -2,8 +2,8 @@ const { InferenceClient } = require("@huggingface/inference");
 require("dotenv").config();
 
 const HF_API_KEY = process.env.HF_TOKEN;
-// const HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1";
-const HF_MODEL = "distilbert-base-uncased-finetuned-sst-2-english";
+const HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1";
+// const HF_MODEL = "distilbert-base-uncased-finetuned-sst-2-english";
 
 const analyzeHF = async (req, res) => {
   const { text } = req.body;
