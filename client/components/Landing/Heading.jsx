@@ -15,10 +15,9 @@ const Heading = () => {
 
   // System Messages (Right → Left)
   const systemMessages = [
-    "VERIFY BEFORE YOU BELIEVE",
-    "DIGITAL TRUST SYSTEM ACTIVE",
-    "AI CONTENT DETECTION ENABLED",
-    "FAKE NEWS MONITORING LIVE",
+    "Full Story : Detailed coverage of the complete news report.",
+    "Bulletins : Brief updates covering the key headlines.",
+    "NO FAKE समाचार — where every headline is verified before it reaches you.",
   ];
 
   // Backend URL
@@ -29,17 +28,23 @@ const Heading = () => {
     const fetchNews = async () => {
       try {
         const response = await axios.get(`${backendUrl}/api/news`, {
-          params: { country: "in", category: "general" }, // adjust category if needed
+          params: { country: "in", category: "general" },
         });
 
-        const titles = (response.data.articles || []).map(
-          (article) => article.title
-        );
+        const news = (response.data.articles || []).map((article) => ({
+          title: article.title,
+          url: article.url,
+        }));
 
-        setHeadlines(titles);
+        setHeadlines(news);
       } catch (error) {
         console.error("Error fetching news:", error);
-        setHeadlines(["LIVE UPDATE • Unable to fetch headlines"]);
+        setHeadlines([
+          {
+            title: "LIVE UPDATE • Unable to fetch headlines",
+            url: "#",
+          },
+        ]);
       } finally {
         setLoading(false);
       }
@@ -103,13 +108,16 @@ const Heading = () => {
           <div className="ticker-ltr flex items-center py-6">
             {!loading &&
               [...headlines, ...headlines].map((headline, index) => (
-                <span
+                <a
                   key={index}
+                  href={headline.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-white text-lg md:text-xl mx-12 tracking-wide uppercase"
                 >
-                  {headline}
+                  {headline.title}
                   <span className="text-newsred mx-8"> ● </span>
-                </span>
+                </a>
               ))}
           </div>
         </div>

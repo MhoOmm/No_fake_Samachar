@@ -37,7 +37,7 @@ body {
 .ticker-ltr {
   width: max-content;
 
-  animation: tickerLTR 105s linear infinite;
+  animation: tickerLTR 200s linear infinite;
 }
 .ticker-ltr:hover {
   animation-play-state: paused;
