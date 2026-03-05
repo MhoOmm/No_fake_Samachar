@@ -29,10 +29,11 @@ const Pramaan = () => {
 
   // =============================== FETCH NEWS ===============================
  useEffect(() => {
+    const backendUrl = "https://no-fake-samacharbackend.onrender.com";
   const fetchNews = async () => {
     try {
       const response = await axios.get(
-        "https://no-fake-samacharbackend.onrender.com/api/news"
+        `${backendUrl}/api/news`
       );
 
       const validArticles = response.data.articles.filter(
