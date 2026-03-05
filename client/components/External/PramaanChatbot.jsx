@@ -28,34 +28,34 @@ const Pramaan = () => {
   }, [messages]);
 
   // =============================== FETCH NEWS ===============================
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await axios.get(
-          "https://newsapi.org/v2/everything?q=india&sortBy=publishedAt&pageSize=5&apiKey=31f410f69a7e45ea9c62e24faa7b1993"
-        );
+ useEffect(() => {
+  const fetchNews = async () => {
+    try {
+      const response = await axios.get(
+        "https://no-fake-samacharbackend.onrender.com/api/news"
+      );
 
-        const validArticles = response.data.articles.filter(
-          (article) => article.urlToImage
-        );
+      const validArticles = response.data.articles.filter(
+        (article) => article.urlToImage
+      );
 
-        setArticles(validArticles);
-      } catch (error) {
-        console.error("News fetch error:", error);
-        setArticles([
-          {
-            title: "Live News Unavailable",
-            urlToImage:
-              "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
-          },
-        ]);
-      } finally {
-        setNewsLoading(false);
-      }
-    };
+      setArticles(validArticles);
+    } catch (error) {
+      console.error("News fetch error:", error);
+      setArticles([
+        {
+          title: "Live News Unavailable",
+          urlToImage:
+            "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+        },
+      ]);
+    } finally {
+      setNewsLoading(false);
+    }
+  };
 
-    fetchNews();
-  }, []);
+  fetchNews();
+}, []);
 
   useEffect(() => {
     if (articles.length === 0) return;
