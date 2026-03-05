@@ -37,7 +37,7 @@ const CustomScrollbar = () => {
         {/* Scrollbar Thumb with Text */}
         <div
           className={`absolute right-0 w-7 bg-charcoal rounded-lg transition-all duration-100 ease-out pointer-events-auto cursor-pointer shadow-xl ${
-            isHovered ? 'bg-black' : 'bg-charcoal'
+            isHovered ? 'bg-black' : 'bg-charcoal' 
           }`}
           style={{
             top: `${thumbPosition}px`,
@@ -50,7 +50,9 @@ const CustomScrollbar = () => {
           {/* Text on the Thumb */}
           <div className="w-full h-full flex items-center justify-center py-3">
             <div
-              className="font-bold text-[11px] text-offwhite select-none leading-tight tracking-wider"
+              className={`font-bold text-[11px] select-none leading-tight tracking-wider ${
+                    isHovered ? "text-white" : "text-offwhite"
+                }`}
               style={{
                 writingMode: 'vertical-rl',
                 textOrientation: 'mixed',
