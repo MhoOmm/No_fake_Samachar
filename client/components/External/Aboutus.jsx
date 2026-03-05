@@ -12,7 +12,7 @@ const Aboutus = () => {
 
         <p className="mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
           A multi-layer AI-powered editorial system designed to detect misinformation,
-          clickbait manipulation and AI-generated content in real time.
+         and AI-generated content in real time.
         </p>
 
         <div className="w-32 h-[3px] bg-newsred mx-auto mt-6"></div>
@@ -49,8 +49,7 @@ const Aboutus = () => {
             </h3>
 
             <ul className="space-y-3 leading-relaxed text-sm">
-              <li>• Fake News — Logistic Regression + TF-IDF</li>
-              <li>• Clickbait — Headline Classification Model</li>
+              <li>• Fake News — Multinomial Naive Bayes + TF-IDF</li>
               <li>• AI Detection — RoBERTa Transformer</li>
             </ul>
           </div>
