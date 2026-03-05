@@ -2,12 +2,14 @@ const { InferenceClient } = require("@huggingface/inference");
 require("dotenv").config();
 
 const HF_API_KEY = process.env.HF_TOKEN;
-// const HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1";
-const HF_MODEL = "distilbert-base-uncased-finetuned-sst-2-english";
+const HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1";
 
 const analyzeHF = async (req, res) => {
   const { text } = req.body;
-  if (!text) return res.status(400).json({ error: "Text is required" });
+
+  if (!text || !text.trim()) {
+    return res.status(400).json({ error: "Text is required" });
+  }
 
   try {
     const client = new InferenceClient(HF_API_KEY);
@@ -23,17 +25,33 @@ const analyzeHF = async (req, res) => {
     }
 
     const top = result[0];
-    const verdict = top.label.toLowerCase().includes("ai")
-      ? "AI Generated"
-      : "Human Written";
-    const aiProbability = Math.round(top.score * 100);
+    const label = top.label.toLowerCase();
+
+    let aiProbability;
+    if (label.includes("ai")) {
+      aiProbability = top.score;
+    } else {
+      aiProbability = 1 - top.score;
+    }
+
+    aiProbability = Math.round(aiProbability * 100);
+
+    const verdict =
+      aiProbability > 50 ? "AI Generated" : "Human Written";
+
     const credibilityScore = 100 - aiProbability;
+
     const details =
       verdict === "AI Generated"
-        ? "AI generation patterns detected in text structure."
+        ? "AI generation patterns detected in text structure and phrasing."
         : "Natural human writing patterns confirmed.";
 
-    return res.json({ verdict, aiProbability, credibilityScore, details });
+    return res.json({
+      verdict,
+      aiProbability,
+      credibilityScore,
+      details,
+    });
   } catch (err) {
     console.error("HF API Error:", err.message || err);
     return res.status(500).json({ error: "Failed to get prediction" });

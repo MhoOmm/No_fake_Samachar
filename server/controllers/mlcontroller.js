@@ -6,7 +6,8 @@ const analyzeWithModel = async (req, res) => {
 
     const response = await axios.post(
       "https://no-fake-samachar-mlservice.onrender.com/predict",
-      { text }
+      { text },
+      { timeout: 60000 }
     );
 
     const { prediction, probability } = response.data;

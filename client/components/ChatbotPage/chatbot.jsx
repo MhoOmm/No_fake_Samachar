@@ -6,14 +6,16 @@ const Chatbot = () => {
   const [fakeResult, setFakeResult] = useState(null);
   const [mode, setMode] = useState("ai");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // const BACKEND_URL = "http://localhost:4000";
-   const BACKEND_URL = "https://no-fake-samacharbackend.onrender.com";
+  const BACKEND_URL = "https://no-fake-samacharbackend.onrender.com";
 
   const handleAnalyze = async () => {
     if (!input.trim()) return;
 
     setLoading(true);
+    setError(null);
     setAiResult(null);
     setFakeResult(null);
 
@@ -43,7 +45,7 @@ const Chatbot = () => {
       }
     } catch (err) {
       console.error("Error analyzing text:", err);
-      alert("Failed to analyze text. Check console for details.");
+      setError("Failed to analyze text. Please try again.");
     }
 
     setLoading(false);
@@ -51,7 +53,7 @@ const Chatbot = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-
+      
       {/* HEADER */}
       <header className="bg-white border-b-2 border-black text-center py-16">
         <h1 className="text-6xl font-bold tracking-wide">AI ANALYSIS</h1>
@@ -104,6 +106,13 @@ const Chatbot = () => {
           {loading ? "Analyzing..." : "Analyze Text"}
         </button>
 
+        {/* ERROR */}
+        {error && (
+          <div className="text-center text-red-600 font-semibold">
+            {error}
+          </div>
+        )}
+
         {/* ================= AI RESULT ================= */}
         {mode === "ai" && aiResult && (
           <div className="mt-16 grid md:grid-cols-2 gap-12">
@@ -146,7 +155,7 @@ const Chatbot = () => {
 
                 <div>
                   <p className="text-4xl font-bold">
-                    {100 - aiResult.aiProbability}%
+                    {aiResult.credibilityScore}%
                   </p>
                   <p className="mt-2 text-sm tracking-wide">HUMAN SCORE</p>
                 </div>
