@@ -10,6 +10,18 @@ with open("text_model_.pkl", "rb") as f:
 
 with open("vectorizer_.pkl", "rb") as f:
     vectorizer = pickle.load(f)
+    
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+    
+@app.get("/warmup")
+def warmup():
+    sample = "Breaking news example"
+    vector = vectorizer.transform([sample])
+    model.predict(vector)
+    return {"status": "warm"}
 
 
 @app.route("/predict", methods=["POST"])
