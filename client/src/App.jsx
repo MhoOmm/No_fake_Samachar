@@ -8,6 +8,7 @@ import Pramaan from "../components/External/PramaanChatbot";
 import Headlines from '../components/External/Headlines';
 import FullNews from '../components/External/FullNews';
 import Chatbot from '../components/ChatbotPage/chatbot';
+import CustomScrollbarWithText from '../components/External/CustomScrollbarWithText';
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Lenis from 'lenis';
@@ -30,6 +31,7 @@ function App() {
 
   return (
     <Router>
+      <CustomScrollbarWithText/>
       <Heading />
       <Routes>
         <Route path="/" element={<><Hand /></>} />

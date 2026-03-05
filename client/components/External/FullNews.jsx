@@ -244,9 +244,19 @@ const FullNews = () => {
       {/* Footer */}
       <div className="bg-charcoal text-offwhite border-t-4 border-charcoal mt-16">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center">
-          <p className="text-xs uppercase tracking-widest text-offwhite/60">
-            © {new Date().getFullYear()} The Daily Chronicle • All Rights Reserved
-          </p>
+          <h3 className="text-lg font-bold sm:text-xl font-heading tracking-widest uppercase">
+          NO FAKE समाचार
+        </h3>
+
+        <p className="mt-4 text-xs sm:text-sm opacity-70">
+          Made with logic, built with AI, driven by truth.
+        </p>
+
+        <div className="w-24 h-[2px] bg-newsred mx-auto mt-6"></div>
+
+        <p className="mt-6 text-xs text-gray-600 tracking-widest">
+          All Rights Reserved • © 2026
+        </p>
         </div>
       </div>
     </div>

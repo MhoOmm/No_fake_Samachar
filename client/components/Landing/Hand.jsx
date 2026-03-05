@@ -165,7 +165,7 @@ const Hand = () => {
         <div className="w-24 h-[2px] bg-newsred mx-auto mt-6"></div>
 
         <p className="mt-6 text-xs opacity-50 tracking-widest">
-          DIGITAL TRUST SYSTEM • © {new Date().getFullYear()}
+          DIGITAL TRUST SYSTEM • © 2026
         </p>
       </footer>
     </>

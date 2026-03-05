@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Headlines = () => {
   const [country, setCountry] = useState("us");
@@ -10,14 +10,11 @@ const Headlines = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Backend URL
-
-  const backendUrl = "https://no-fake-samacharbackend.onrender.com"; // Change this to your deployed backend when needed
-
+  const backendUrl = "https://no-fake-samacharbackend.onrender.com";
 
   const fetchNews = async () => {
     setLoading(true);
     try {
-      // Call your backend route
       const response = await axios.get(`${backendUrl}/api/news`, {
         params: { country, category },
       });
@@ -36,12 +33,66 @@ const Headlines = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleScroll = (e) => {
-    const container = e.target;
-    const scrollPosition = container.scrollTop;
-    const windowHeight = container.clientHeight;
-    const index = Math.round(scrollPosition / windowHeight);
-    setCurrentIndex(index);
+  // Navigation functions
+  const goToNext = () => {
+    if (currentIndex < articles.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const goToPrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        goToNext();
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        goToPrev();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex, articles.length]);
+
+  // Touch/Swipe handling
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 50) {
+      // Swipe up
+      goToNext();
+    }
+
+    if (touchStart - touchEnd < -50) {
+      // Swipe down
+      goToPrev();
+    }
+  };
+
+  // Mouse wheel navigation
+  const handleWheel = (e) => {
+    e.preventDefault();
+    if (e.deltaY > 0) {
+      goToNext();
+    } else {
+      goToPrev();
+    }
   };
 
   return (
@@ -125,106 +176,137 @@ const Headlines = () => {
 
         {!loading && articles.length > 0 && (
           <div
-            className="h-full overflow-y-auto snap-y snap-mandatory"
-            onScroll={handleScroll}
+            className="h-full flex items-center justify-center p-4"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onWheel={handleWheel}
           >
-            {articles.map((article, i) => (
-              <div
-                key={i}
-                className="h-screen snap-start flex items-center justify-center p-4"
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.3 }}
+                className="bg-charcoal text-offwhite w-full max-w-md h-[85vh] border-8 border-charcoal shadow-2xl overflow-hidden flex flex-col"
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.4 }}
-                  className="bg-charcoal text-offwhite w-full max-w-md h-[85vh] border-8 border-charcoal shadow-2xl overflow-hidden flex flex-col"
-                >
-                  {/* Image */}
-                  <div className="relative h-[45%] border-b-4 border-offwhite/20">
-                    {article.urlToImage ? (
-                      <img
-                        src={article.urlToImage}
-                        alt={article.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src =
-                            "https://via.placeholder.com/600x400/2B2B2B/F0F0F0?text=No+Image";
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-charcoal/30 flex items-center justify-center">
-                        <span className="text-offwhite/30 text-sm uppercase tracking-widest">
-                          No Image
-                        </span>
-                      </div>
-                    )}
-                    <div className="absolute top-4 left-4 bg-offwhite text-white px-3 py-1 text-xs font-bold tracking-widest">
-                      STORY {String(i + 1).padStart(2, "0")}
+                {/* Image */}
+                <div className="relative h-[45%] border-b-4 border-offwhite/20">
+                  {articles[currentIndex].urlToImage ? (
+                    <img
+                      src={articles[currentIndex].urlToImage}
+                      alt={articles[currentIndex].title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src =
+                          "https://via.placeholder.com/600x400/2B2B2B/F0F0F0?text=No+Image";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-charcoal/30 flex items-center justify-center">
+                      <span className="text-offwhite/30 text-sm uppercase tracking-widest">
+                        No Image
+                      </span>
                     </div>
+                  )}
+                  <div className="absolute top-4 left-4 bg-offwhite text-white px-3 py-1 text-xs font-bold tracking-widest">
+                    STORY {String(currentIndex + 1).padStart(2, "0")}
                   </div>
+                </div>
 
-                  {/* Content */}
-                  <div className="flex-1 p-6 flex flex-col overflow-hidden">
-                    <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-offwhite/60 mb-4 pb-3 border-b border-offwhite/10">
-                      <span className="font-bold">
-                        {article.source?.name || "Unknown Source"}
-                      </span>
-                      <span>
-                        {new Date(article.publishedAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          }
-                        )}
-                      </span>
-                    </div>
-
-                    <h2 className="font-header text-2xl sm:text-3xl leading-tight mb-4 text-offwhite">
-                      {article.title}
-                    </h2>
-
-                    <div className="flex-1 overflow-y-auto mb-4">
-                      <p className="text-offwhite/90 text-base leading-relaxed">
-                        {article.description ||
-                          "No description available for this article."}
-                      </p>
-                      {article.author && (
-                        <p className="text-offwhite/50 text-sm italic mt-3">
-                          — {article.author}
-                        </p>
+                {/* Content */}
+                <div className="flex-1 p-6 flex flex-col overflow-hidden">
+                  <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-offwhite/60 mb-4 pb-3 border-b border-offwhite/10">
+                    <span className="font-bold">
+                      {articles[currentIndex].source?.name || "Unknown Source"}
+                    </span>
+                    <span>
+                      {new Date(articles[currentIndex].publishedAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        }
                       )}
-                    </div>
-
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-auto text-center bg-offwhite text-charcoal py-3 text-xs uppercase tracking-widest font-bold hover:bg-offwhite/90 transition-all duration-300 block no-underline"
-                    >
-                      Read Full Article →
-                    </a>
+                    </span>
                   </div>
 
-                  <div className="h-2 bg-offwhite/10"></div>
-                </motion.div>
-              </div>
-            ))}
+                  <h2 className="font-header text-2xl sm:text-3xl leading-tight mb-4 text-offwhite">
+                    {articles[currentIndex].title}
+                  </h2>
+
+                  <div className="flex-1 overflow-y-auto mb-4">
+                    <p className="text-offwhite/90 text-base leading-relaxed">
+                      {articles[currentIndex].description ||
+                        "No description available for this article."}
+                    </p>
+                    {articles[currentIndex].author && (
+                      <p className="text-offwhite/50 text-sm italic mt-3">
+                        — {articles[currentIndex].author}
+                      </p>
+                    )}
+                  </div>
+
+                  <a
+                    href={articles[currentIndex].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto text-center bg-offwhite text-charcoal py-3 text-xs uppercase tracking-widest font-bold hover:bg-offwhite/90 transition-all duration-300 block no-underline"
+                  >
+                    Read Full Article →
+                  </a>
+                </div>
+
+                <div className="h-2 bg-offwhite/10"></div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         )}
 
-        {!loading && articles.length > 0 && currentIndex < articles.length - 1 && (
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-            <div className="bg-charcoal/90 text-offwhite px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold backdrop-blur-sm border border-offwhite/20">
-              Scroll for More ↓
-            </div>
-          </div>
+        {/* Navigation Arrows */}
+        {!loading && articles.length > 0 && (
+          <>
+            {/* Previous Arrow */}
+            {currentIndex > 0 && (
+              <button
+                onClick={goToPrev}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-charcoal/90 text-offwhite p-4 rounded-full hover:bg-charcoal transition-all z-20 backdrop-blur-sm border border-offwhite/20"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Next Arrow */}
+            {currentIndex < articles.length - 1 && (
+              <button
+                onClick={goToNext}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-charcoal/90 text-offwhite p-4 rounded-full hover:bg-charcoal transition-all z-20 backdrop-blur-sm border border-offwhite/20"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            )}
+          </>
         )}
 
+        {/* Counter */}
         {!loading && articles.length > 0 && (
           <div className="absolute top-4 right-4 bg-charcoal/90 text-offwhite px-3 py-2 rounded-full text-xs font-bold backdrop-blur-sm border border-offwhite/20 z-20">
             {currentIndex + 1} / {articles.length}
+          </div>
+        )}
+
+        {/* Instructions */}
+        {!loading && articles.length > 0 && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+            <div className="bg-charcoal/90 text-offwhite px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold backdrop-blur-sm border border-offwhite/20">
+              Swipe • Arrows • Scroll
+            </div>
           </div>
         )}
       </div>

@@ -5,21 +5,7 @@ import axios from "axios";
 const NewsSection = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
 
-  // Backend URL
-  const backendUrl = "https://no-fake-samacharbackend.onrender.com";
-
-  const fetchNews = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${backendUrl}/api/news`, {
-        params: { country: "us", category: "technology" },
-      });
-      setArticles(response.data.articles || []);
-    } catch (err) {
-      console.error("Error fetching news:", err);
-=======
   const [country, setCountry] = useState("us");
   const [category, setCategory] = useState("technology");
   const [error, setError] = useState("");
@@ -45,7 +31,7 @@ const response = await axios.get(`${backendUrl}/api/news`, {
     } catch (err) {
       console.error("Error fetching news:", err);
       setError("Failed to fetch news. Please try again later.");
->>>>>>> d8a3b7eeba2d01a9973f4345b4d9f155d6cea9e1
+
       setArticles([]);
     }
     setLoading(false);
@@ -53,54 +39,17 @@ const response = await axios.get(`${backendUrl}/api/news`, {
 
   useEffect(() => {
     fetchNews();
-<<<<<<< HEAD
-  }, []);
 
-  return (
-    <div className="flex flex-col items-center mt-24">
-=======
   }, [country, category]); // refetch when country/category changes
 
   return (
     <div className="flex flex-col items-center mt-24 px-4">
->>>>>>> d8a3b7eeba2d01a9973f4345b4d9f155d6cea9e1
+
       <h3 className="text-xl md:text-2xl font-heading tracking-widest mb-6 text-charcoal">
         Explore Our News Bulletin & Inshorts
       </h3>
 
-<<<<<<< HEAD
-      {loading && <p className="text-charcoal text-sm">Loading news...</p>}
 
-      {!loading && articles.length > 0 && (
-        <div className="flex flex-wrap gap-8 justify-center">
-          {articles.slice(0, 4).map((article, i) => (
-            <a
-              key={i}
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group text-center w-48"
-            >
-              <div className="overflow-hidden rounded-xl shadow-xl">
-                <img
-                  src={article.urlToImage || "https://via.placeholder.com/200"}
-                  alt={article.title}
-                  className="w-48 h-48 object-cover transition duration-500 group-hover:blur-sm"
-                />
-              </div>
-              <p className="mt-3 font-semibold tracking-wide text-charcoal group-hover:text-black transition">
-                {article.title.length > 40
-                  ? article.title.slice(0, 40) + "..."
-                  : article.title}
-              </p>
-            </a>
-          ))}
-        </div>
-      )}
-
-      {!loading && articles.length === 0 && (
-        <p className="text-charcoal text-sm mt-4">No news available.</p>
-=======
       {/* Country & Category Selectors */}
       <div className="flex gap-4 mb-6 flex-wrap justify-center">
         <div className="flex items-center gap-2">
@@ -191,10 +140,9 @@ const response = await axios.get(`${backendUrl}/api/news`, {
         <p className="text-charcoal text-sm mt-4">
           No news available for this selection.
         </p>
->>>>>>> d8a3b7eeba2d01a9973f4345b4d9f155d6cea9e1
       )}
     </div>
   );
-};
 
+}
 export default NewsSection;
