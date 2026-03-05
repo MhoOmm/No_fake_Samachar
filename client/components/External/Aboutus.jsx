@@ -50,7 +50,6 @@ const Aboutus = () => {
 
             <ul className="space-y-3 leading-relaxed text-sm">
               <li>• Fake News — Logistic Regression + TF-IDF</li>
-              <li>• Clickbait — Headline Classification Model</li>
               <li>• AI Detection — RoBERTa Transformer</li>
             </ul>
           </div>
