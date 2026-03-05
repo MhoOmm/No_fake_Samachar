@@ -1,9 +1,9 @@
-// controllers/roberController.js
 const { InferenceClient } = require("@huggingface/inference");
 require("dotenv").config();
 
-const HF_API_KEY = process.env.HF_API_KEY;
-const HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1";
+const HF_API_KEY = process.env.HF_TOKEN;
+// const HF_MODEL = "fakespot-ai/roberta-base-ai-text-detection-v1";
+const HF_MODEL = "distilbert-base-uncased-finetuned-sst-2-english";
 
 const analyzeHF = async (req, res) => {
   const { text } = req.body;
@@ -22,22 +22,21 @@ const analyzeHF = async (req, res) => {
       return res.status(500).json({ error: "No prediction returned from HF" });
     }
 
-    const topPrediction = result[0];
-    const verdict = topPrediction.label.toLowerCase().includes("ai")
+    const top = result[0];
+    const verdict = top.label.toLowerCase().includes("ai")
       ? "AI Generated"
       : "Human Written";
-
-    const aiProbability = Math.round(topPrediction.score * 100);
+    const aiProbability = Math.round(top.score * 100);
     const credibilityScore = 100 - aiProbability;
     const details =
       verdict === "AI Generated"
-        ? "AI generation patterns detected in text structure"
-        : "Natural human writing patterns confirmed";
+        ? "AI generation patterns detected in text structure."
+        : "Natural human writing patterns confirmed.";
 
-    res.json({ verdict, aiProbability, credibilityScore, details });
+    return res.json({ verdict, aiProbability, credibilityScore, details });
   } catch (err) {
-    console.error("HF API Error:", err.response?.data || err.message);
-    res.status(500).json({ error: "Failed to get prediction" });
+    console.error("HF API Error:", err.message || err);
+    return res.status(500).json({ error: "Failed to get prediction" });
   }
 };
 

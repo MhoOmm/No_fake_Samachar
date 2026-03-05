@@ -1,4 +1,3 @@
-// FullNews.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -20,15 +19,20 @@ const FullNews = () => {
   const [country, setCountry] = useState("us");
   const [category, setCategory] = useState("general");
 
+  const backendUrl = "https://no-fake-samacharbackend.onrender.com";
+
   const fetchFullNews = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&pageSize=10&apiKey=5ca44e06899247f18e6ec93a74b9870b`
-      );
-      setArticles(response.data.articles);
+      const response = await axios.get(`${backendUrl}/api/news`, {
+        params: { country, category },
+      });
+
+      // Backend returns { articles: [...] }
+      setArticles(response.data.articles || []);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching news:", err);
+      setArticles([]);
     }
     setLoading(false);
   };
@@ -40,7 +44,7 @@ const FullNews = () => {
   return (
     <div className="min-h-screen bg-offwhite">
 
-      {/* Filter Controls - Newspaper Style */}
+      {/* Filter Controls */}
       <div className="bg-charcoal text-offwhite border-b border-charcoal/10">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex flex-wrap items-center justify-center gap-6">
