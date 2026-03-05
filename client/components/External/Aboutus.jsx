@@ -12,7 +12,7 @@ const Aboutus = () => {
 
         <p className="mt-6 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
           A multi-layer AI-powered editorial system designed to detect misinformation,
-          clickbait manipulation and AI-generated content in real time.
+         and AI-generated content in real time.
         </p>
 
         <div className="w-32 h-[3px] bg-newsred mx-auto mt-6"></div>
