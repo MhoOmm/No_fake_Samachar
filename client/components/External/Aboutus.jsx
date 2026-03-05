@@ -49,7 +49,7 @@ const Aboutus = () => {
             </h3>
 
             <ul className="space-y-3 leading-relaxed text-sm">
-              <li>• Fake News — Logistic Regression + TF-IDF</li>
+              <li>• Fake News — Multinomial Naive Bayes + TF-IDF</li>
               <li>• AI Detection — RoBERTa Transformer</li>
             </ul>
           </div>
