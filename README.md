@@ -27,6 +27,9 @@ A MERN stack web application that analyzes text or news articles to detect wheth
 
 ## Project Structure
 ```
+├── 📁 .github
+│   └── 📁 workflows
+│       └── ⚙️ daily_ping.yml
 ├── 📁 Client
 │   ├── 📁 assets
 │   │   ├── 🖼️ image1.jpeg
@@ -38,6 +41,7 @@ A MERN stack web application that analyzes text or news articles to detect wheth
 │   │   │   └── 📄 chatbot.jsx
 │   │   ├── 📁 External
 │   │   │   ├── 📄 Aboutus.jsx
+│   │   │   ├── 📄 CustomScrollbarWithText.jsx
 │   │   │   ├── 📄 FullNews.jsx
 │   │   │   ├── 📄 Headlines.jsx
 │   │   │   ├── 📄 NewsSection.jsx
@@ -46,6 +50,8 @@ A MERN stack web application that analyzes text or news articles to detect wheth
 │   │       ├── 📄 Hand.jsx
 │   │       └── 📄 Heading.jsx
 │   ├── 📁 public
+│   │   ├── 🖼️ favicon-512.png
+│   │   ├── 📄 favicon.ico
 │   │   └── 🖼️ vite.svg
 │   ├── 📁 src
 │   │   ├── 📁 assets
@@ -62,14 +68,21 @@ A MERN stack web application that analyzes text or news articles to detect wheth
 │   ├── ⚙️ package.json
 │   └── 📄 vite.config.js
 ├── 📁 MLService
-│   ├── 📁 models
-│   ├── 🐍 main.py
-│   ├── 🐍 predict.py
-│   └── 🐍 test_hf.py
+│   ├── 📁 Data
+│   │   ├── 📄 Fake.csv
+│   │   └── 📄 True.csv
+│   ├── ⚙️ .gitignore
+│   ├── 📄 No_Fake_Samachar.ipynb
+│   ├── 🐍 app.py
+│   ├── 📄 requirements.txt
+│   ├── 📄 text_model_.pkl
+│   └── 📄 vectorizer_.pkl
 ├── 📁 Server
 │   ├── 📁 config
 │   │   └── 📄 db.js
 │   ├── 📁 controllers
+│   │   ├── 📄 mlcontroller.js
+│   │   ├── 📄 newsController.js
 │   │   ├── 📄 pramaanController.js
 │   │   ├── 📄 roberController.js
 │   │   └── 📄 userController.js
@@ -79,6 +92,7 @@ A MERN stack web application that analyzes text or news articles to detect wheth
 │   │   └── 📄 userModel.js
 │   ├── 📁 routes
 │   │   ├── 📄 chatbotRoutes.js
+│   │   ├── 📄 newsRoutes.js
 │   │   └── 📄 userRoute.js
 │   ├── 📁 utils
 │   │   └── 📄 try.js
@@ -86,5 +100,6 @@ A MERN stack web application that analyzes text or news articles to detect wheth
 │   ├── ⚙️ package-lock.json
 │   ├── ⚙️ package.json
 │   └── 📄 server.js
-└── ⚙️ .gitattributes
+├── ⚙️ .gitattributes
+└── 📝 README.md
 ```
